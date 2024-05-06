@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,7 +49,7 @@
 <div style="padding-top: 70px;">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Active</a>
+          <a class="nav-link active" aria-current="page" href="#">Active</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Link</a>
@@ -62,6 +61,21 @@
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
       </li>
     </ul>
+</div>
+
+<div class="container">
+  <div class="row">
+    <!-- First column with 1/4 width (3/12) -->
+    <div class="col-md-4">
+      <!-- Content for the first column -->
+      <img src="{% static 'images/icon-rain.png' %}" alt="" id="weather-img">
+    </div>
+    <!-- Second column with 3/4 width (9/12) -->
+    <div class="col-md-8">
+      <!-- Content for the second column -->
+      <h2>Actual Weather</h2>
+    </div>
+  </div>
 </div>
 
 
