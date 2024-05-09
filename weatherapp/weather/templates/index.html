@@ -68,12 +68,28 @@
     <!-- First column with 1/4 width (3/12) -->
     <div class="col-md-4">
       <!-- Content for the first column -->
-      <img src="{% static 'images/icon-rain.png' %}" alt="" id="weather-img">
+      <img src="{% static 'images/icon-clouds-sun.png' %}" alt="" id="weather-img">
     </div>
     <!-- Second column with 3/4 width (9/12) -->
     <div class="col-md-8">
       <!-- Content for the second column -->
-      <h2>Actual Weather</h2>
+        <h2>Actual Weather</h2>
+        <p>
+            <span class="temp">25</span>
+            <span class="temp-symbol">°C</span>
+        </p>
+        <p>Cloudy</p>
+        <p>Rain probability: 25%</p>
+
+        <div class="time-list">
+            {% for t in time %}
+            <div class="time-item">
+              <div class="degrees">10°C</div>
+              <div class="time">{{t}}</div>
+            </div>
+            {% endfor %}
+        </div>
+
     </div>
   </div>
 </div>

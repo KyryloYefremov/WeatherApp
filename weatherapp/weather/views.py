@@ -4,4 +4,5 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, 'index.html')
+    time = [f"{i}:00" for i in range(24)]
+    return render(request, 'index.html', {'time': time})
