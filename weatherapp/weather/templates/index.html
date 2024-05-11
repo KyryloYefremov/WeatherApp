@@ -65,12 +65,10 @@
 
 <div class="container">
   <div class="row">
-    <!-- First column with 1/4 width (3/12) -->
     <div class="col-md-4">
       <!-- Content for the first column -->
-      <img src="{% static 'images/icon-clouds-sun.png' %}" alt="" id="weather-img">
+        <img src="{% static 'images/icon-clouds-sun.png' %}" alt="" id="weather-img">
     </div>
-    <!-- Second column with 3/4 width (9/12) -->
     <div class="col-md-8">
       <!-- Content for the second column -->
         <h2>Actual Weather</h2>
@@ -94,6 +92,73 @@
   </div>
 </div>
 
+<hr>
+
+<div class="container">
+    <div id="forecast">
+        <div class="col-md" id="next-days-forecast">
+            <h2>Next Days</h2>
+            <div class="forecast-list">
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md" id="prev-days-forecast">
+            <div>
+                <h2>Previous Days</h2>
+            </div>
+
+            <div class="forecast-list">
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item" >
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+                <div class="forecast-item">
+                    <div class="forecast-day">17.01.2024</div>
+                    <div class="forecast-degrees">Monday</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <span class="text-muted">Place sticky footer content here.</span>
+  </div>
+</footer>
 
 
 </body>

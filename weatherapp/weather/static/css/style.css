@@ -1,12 +1,10 @@
 #navbar-main {
-    background-color: #6e8cb6 !important;
+    background: linear-gradient(to right, #6e8cb6, #7ea4d0) !important;
 }
 
 #weather-img {
     max-width: 100%;
     height: auto;
-    margin-right: 10%;
-    margin-top: 10%;
 }
 
 /* Style for the time list */
@@ -44,4 +42,31 @@
   font-size: 12px; /* Adjust font size as needed */
   text-align: center;
   font-weight: bold;
+}
+
+.forecast-list {
+    display: flex;
+    justify-content: center; /* Выравнивание блоков по центру */
+    padding-top: 5px;
+}
+
+.forecast-item {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-right: 10px; /* Добавляем небольшой отступ между блоками */
+}
+
+#next-days-forecast {
+    text-align: center;
+    padding-top: 3%;
+}
+
+#prev-days-forecast {
+    text-align: center;
+    padding-top: 5%;
+}
+
+#forecast {
+    padding-bottom: 10%;
 }
