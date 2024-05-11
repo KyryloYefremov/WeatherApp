@@ -54,7 +54,7 @@
     border: 2px solid #ccc;
     border-radius: 8px;
     padding: 10px;
-    margin-right: 10px; /* Добавляем небольшой отступ между блоками */
+    margin-right: 10px;
 }
 
 #next-days-forecast {
