@@ -7,6 +7,16 @@
     height: auto;
 }
 
+#nav-tabs-div {
+    padding-top: 5%;
+}
+
+.weather-container {
+    width: 100%;
+    padding-top: 1%;
+    padding-bottom: 2%;
+}
+
 /* Style for the time list */
 .time-list {
   display: flex;
