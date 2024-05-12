@@ -46,44 +46,37 @@
 </nav>
 
 <!-- bootstrap tabs -->
-<div style="padding-top: 70px;">
+<div id="nav-tabs-div">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Active</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+          <a class="nav-link active" aria-current="page" href="#">{{ today_forecast.city }}</a>
       </li>
     </ul>
 </div>
 
 <div class="container">
-  <div class="row">
+  <div class="row weather-container">
     <div class="col-md-4">
       <!-- Content for the first column -->
-        <img src="{% static 'images/icon-clouds-sun.png' %}" alt="" id="weather-img">
+        <img src="{% static today_forecast.icon_src %}" alt="" id="weather-img">
     </div>
     <div class="col-md-8">
       <!-- Content for the second column -->
-        <h2>Actual Weather</h2>
+        <h2>Actual Weather {{ today_forecast.city }}: {{ today_forecast.date }} </h2>
         <p>
-            <span class="temp">25</span>
+            <span class="temp">{{ today_forecast.mintemp }} - {{ today_forecast.maxtemp }}</span>
             <span class="temp-symbol">°C</span>
         </p>
-        <p>Cloudy</p>
-        <p>Rain probability: 25%</p>
+        <p>{{ today_forecast.condition }}.</p>
+        <p>Rain probability: {{ today_forecast.daily_chance_of_rain }}%</p>
 
         <div class="time-list">
-            {% for t in time %}
+            {% for hour in today_forecast.hourly %}
             <div class="time-item">
-              <div class="degrees">10°C</div>
-              <div class="time">{{t}}</div>
+                {% for time, degrees in hour.items %}
+                  <div class="degrees">{{ degrees }}°C</div>
+                  <div class="time">{{ time }}</div>
+                {% endfor %}
             </div>
             {% endfor %}
         </div>
