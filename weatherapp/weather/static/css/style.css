@@ -7,8 +7,23 @@
     height: auto;
 }
 
+#search-div {
+    padding-top: 7%;
+    padding-left: 20%;
+    padding-right: 20%;
+}
+
 #nav-tabs-div {
-    padding-top: 5%;
+    padding-top: 3%;
+}
+
+.search {
+    background: #f2f2f2;
+    color: #2c5196;
+    border-color: #2c5196;
+}
+.search:hover {
+    background: #7ea4d0;
 }
 
 .weather-container {
