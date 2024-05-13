@@ -1,11 +1,23 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from weather.controllers.weather_api import WeatherApi
 from config import API_KEY
 
 
-def index(request):
-    city = 'Prague'
+DEFAULT_CITY = 'Prague'
+
+
+def index(request, city=DEFAULT_CITY):
     weather_api = WeatherApi(API_KEY)
-    today_forecast = weather_api.get_today_forecast(city)
-    today_forecast['city'] = city
-    return render(request, 'index.html', context={'today_forecast': today_forecast})
+    try:
+        today_forecast = weather_api.get_today_forecast(city)
+        today_forecast['city'] = city
+        return render(request, 'index.html', context={'today_forecast': today_forecast})
+    except ValueError as e:
+        return render(request, 'index-search-error.html', context={'error': e})
+
+
+def search_city(request):
+    # TODO: add validation for city name.
+    city = request.GET.get('city', None)
+    if city:
+        return redirect('index', city=city)
