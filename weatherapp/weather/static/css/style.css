@@ -95,3 +95,11 @@
 #forecast {
     padding-bottom: 10%;
 }
+
+.error-message {
+    color: red;
+    text-align: center;
+    padding-top: 5%;
+    padding-bottom: 30%;
+    font-size: 200%;
+}
