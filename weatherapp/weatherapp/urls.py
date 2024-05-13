@@ -20,5 +20,6 @@ from django.urls import path
 from weather import views
 
 urlpatterns = [
-    path('', views.index, name='home'),
+    path('<str:city>', views.index, name='index'),
+    path('search/', views.search_city, name='search_city'),
 ]
