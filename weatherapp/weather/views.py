@@ -17,7 +17,7 @@ def index(request, city=DEFAULT_CITY):
 
 
 def search_city(request):
-    # TODO: add validation for city name.
     city = request.GET.get('city', None)
     if city:
+        city = city.title()
         return redirect('index', city=city)
