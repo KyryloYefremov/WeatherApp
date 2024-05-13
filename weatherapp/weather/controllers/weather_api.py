@@ -47,7 +47,7 @@ class WeatherApi:
         response = requests.get(url)
         # Check if city exists.
         if response.status_code != 200:
-            raise ValueError("Error 404. Don't find city with name: {city}.")
+            raise ValueError(f"Error 404. Don't find city with name: {city}.")
 
         data = response.json()
 
