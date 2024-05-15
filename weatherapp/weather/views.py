@@ -6,7 +6,11 @@ from config import API_KEY
 DEFAULT_CITY = 'Prague'
 
 
-def index(request, city=DEFAULT_CITY):
+def index(request):
+    return redirect('get_city_forecast', city=DEFAULT_CITY)
+
+
+def get_city_forecast(request, city):
     weather_api = WeatherApi(API_KEY)
     try:
         today_forecast = weather_api.get_today_forecast(city)
@@ -20,4 +24,4 @@ def search_city(request):
     city = request.GET.get('city', None)
     if city:
         city = city.title()
-        return redirect('index', city=city)
+        return redirect('get_city_forecast', city=city)
