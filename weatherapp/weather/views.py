@@ -4,14 +4,14 @@ from config import API_KEY
 
 
 DEFAULT_CITY = 'Prague'
+weather_api = WeatherApi(API_KEY)
 
 
 def index(request):
-    return redirect('get_city_forecast', city=DEFAULT_CITY)
+    return get_city_forecast(request, DEFAULT_CITY)
 
 
 def get_city_forecast(request, city):
-    weather_api = WeatherApi(API_KEY)
     try:
         today_forecast = weather_api.get_today_forecast(city)
         today_forecast['city'] = city
