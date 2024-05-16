@@ -36,7 +36,6 @@ class WeatherApi:
             "Moderate or heavy snow with thunder": 1282,  "Patchy light snow with thunder": 1279
         }
 
-
     def get_today_forecast(self, city: str) -> dict:
         """
         Get today's forecast for the specified city.
@@ -46,6 +45,10 @@ class WeatherApi:
 
         url = f'{self.__url}v1/forecast.json?key={self.__api_key}&q={city}&days=1&aqi=no&alerts=no'
         response = requests.get(url)
+        # Check if city exists.
+        if response.status_code != 200:
+            raise ValueError(f"Error 404. Don't find city with name: {city}.")
+
         data = response.json()
 
         # Convert api data to {time: degrees} view.
