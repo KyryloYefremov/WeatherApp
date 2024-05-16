@@ -2,7 +2,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from unittest.mock import patch, MagicMock
 
-from config import API_KEY
 from weather.controllers.weather_api import WeatherApi
 from weather.views import get_city_forecast
 
@@ -61,7 +60,7 @@ class WeatherViewsTests(TestCase):
 class TestWeatherApi(TestCase):
 
     def setUp(self):
-        self.api_key = API_KEY
+        self.api_key = 'test_key'
         self.weather_api = WeatherApi(self.api_key)
 
     @patch('weather.controllers.weather_api.requests.get')
