@@ -41,7 +41,7 @@ jobs:
     - name: Run tests with coverage
       run: |
         coverage erase
-        coverage run manage.py test
+        coverage run --source='weatherapp/weather' weatherapp/manage.py test
         coverage report
         coverage html
 
