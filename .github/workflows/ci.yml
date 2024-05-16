@@ -39,6 +39,9 @@ jobs:
 
 
     - name: Run tests with coverage
+      env:
+        DJANGO_SETTINGS_MODULE: weatherapp.settings
+        API_KEY: ${{ secrets.API_KEY }}
       run: |
         coverage erase
         coverage run --source='weatherapp/weather' weatherapp/manage.py test

@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from weather.controllers.weather_api import WeatherApi
-from config import API_KEY
 
+import os
 
 DEFAULT_CITY = 'Prague'
-weather_api = WeatherApi(API_KEY)
+weather_api = WeatherApi(os.getenv('API_KEY'))
 
 
 def index(request):
