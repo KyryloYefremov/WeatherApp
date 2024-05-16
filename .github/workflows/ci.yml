@@ -28,6 +28,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Display directory structure for debugging
+      run: ls -R
+      continue-on-error: true
+
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
