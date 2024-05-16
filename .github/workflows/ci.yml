@@ -37,14 +37,12 @@ jobs:
     - name: Run tests with coverage
       run: |
         coverage erase
-        coverage run --source='.' manage.py test
-        coverage report -m
+        coverage run manage.py test
+        coverage report
         coverage html
-      env:
-        DJANGO_SETTINGS_MODULE: your_project.settings  # Make sure to set your Django settings module
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v3
       with:
         name: coverage-html-report
-        path: htmlcov  # This is the default directory where coverage stores the HTML report
+        path: htmlcov  
