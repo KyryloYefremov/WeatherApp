@@ -25,3 +25,11 @@ def search_city(request):
     if city:
         city = city.title()
         return redirect('get_city_forecast', city=city)
+
+
+def sign_in(request):
+    return render(request, 'sign-in.html')
+
+
+def sign_up(request):
+    return render(request, 'sign-up.html')

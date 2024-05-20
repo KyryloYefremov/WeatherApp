@@ -23,4 +23,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('<str:city>', views.get_city_forecast, name='get_city_forecast'),
     path('search/', views.search_city, name='search_city'),
+    path('sign-in/', views.sign_in, name='sign_in'),
+    path('sign-up/', views.sign_up, name='sign_up'),
 ]
