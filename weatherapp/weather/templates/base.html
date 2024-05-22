@@ -22,13 +22,20 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
+      {% if not user.is_authenticated %}
      <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="ms-auto">
             <button class="btn btn-outline-light me-2" onclick="location.href='{% url "sign_in" %}'">Sign in</button>
             <button class="btn btn-outline-light" onclick="location.href='{% url "sign_up" %}'">Sign up</button>
         </div>
     </div>
-  </div>
+    {% else %}
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="ms-auto">
+            <button class="btn btn-outline-light me-2" onclick="location.href='{% url "sign_out" %}'">Sign out</button>
+        </div>
+    </div>
+      {% endif %}
 </nav>
 
 <!-- Block for content -->
