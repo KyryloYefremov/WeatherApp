@@ -1,7 +1,11 @@
+import os
+import tempfile
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from unittest.mock import patch, MagicMock
 
+from weather.controllers.user_controller import UserController
 from weather.controllers.weather_api import WeatherApi
 from weather.views import get_city_forecast
 
@@ -112,3 +116,42 @@ class TestWeatherApi(TestCase):
         # Check that a ValueError is raised when the city is not found
         with self.assertRaises(ValueError):
             self.weather_api.get_today_forecast(city)
+
+
+class TestUserController(TestCase):
+
+    def setUp(self):
+        self.temp_file = tempfile.NamedTemporaryFile(delete=False)
+        self.user_controller = UserController(self.temp_file.name)
+
+    def tearDown(self):
+        os.remove(self.temp_file.name)
+
+    def test_sign_up_and_sign_in(self):
+        email = "test@example.com"
+        password = "password123"
+        card_number = "1234567812345678"
+        cvv = "123"
+        expiration_date = "12/24"
+
+        # Test sign up with correct data
+        self.assertTrue(self.user_controller.sign_up(email, password, card_number, cvv, expiration_date))
+
+        # Test sign in with correct password
+        self.assertTrue(self.user_controller.sign_in(email, password))
+
+        # Test sign in with wrong password
+        self.assertFalse(self.user_controller.sign_in(email, "wrongpassword"))
+
+    def test_sign_up_invalid_data(self):
+        email = "test@example.com"
+        password = "password123"
+        card_number = "1234"  # Wrong card number
+        cvv = "12"            # Wrong CVV
+        expiration_date = "1224"  # Wrong expiration date
+
+        self.assertFalse(self.user_controller.sign_up(email, password, card_number, cvv, expiration_date))
+
+    def test_sign_in_non_existent_user(self):
+        # Test sign in with non-existent email
+        self.assertFalse(self.user_controller.sign_in("nonexistent@example.com", "password"))

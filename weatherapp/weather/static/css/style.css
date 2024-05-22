@@ -103,3 +103,18 @@
     padding-bottom: 30%;
     font-size: 200%;
 }
+
+.form-signin {
+    max-width: 300px;
+    padding: 15px;
+    margin: auto;
+}
+.form-signin img {
+    margin-bottom: 20px;
+}
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+.form-signin .form-floating input {
+    margin-bottom: 10px;
+}
