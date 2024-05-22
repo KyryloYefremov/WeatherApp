@@ -53,6 +53,7 @@
 
 <hr>
 
+{% if user.is_authenticated %}
 <div class="container">
     <div id="forecast">
         <div class="col-md" id="next-days-forecast">
@@ -112,5 +113,6 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 {% endblock %}
