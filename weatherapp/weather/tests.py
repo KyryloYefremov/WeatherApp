@@ -1,5 +1,6 @@
 import os
 import tempfile
+from datetime import date, timedelta
 
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -16,9 +17,9 @@ class WeatherViewsTests(TestCase):
         self.default_city = 'Prague'
         self.client = Client()
 
-    @patch.object(WeatherApi, 'get_today_forecast')
-    def test_index_view(self, mock_get_today_forecast):
-        mock_get_today_forecast.return_value = {
+    @patch.object(WeatherApi, 'get_forecast')
+    def test_index_view(self, mock_get_forecast):
+        mock_get_forecast.return_value = {
             'mintemp': '15°C',
             'maxtemp': '25°C',
             'condition': 'Sunny',
@@ -28,36 +29,38 @@ class WeatherViewsTests(TestCase):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index.html')
-        self.assertContains(response, mock_get_today_forecast.return_value['mintemp'])
-        self.assertContains(response, mock_get_today_forecast.return_value['maxtemp'])
-        self.assertContains(response, mock_get_today_forecast.return_value['condition'])
-        self.assertContains(response, mock_get_today_forecast.return_value['daily_chance_of_rain'])
-        self.assertContains(response, mock_get_today_forecast.return_value['date'])
+        self.assertContains(response, mock_get_forecast.return_value['mintemp'])
+        self.assertContains(response, mock_get_forecast.return_value['maxtemp'])
+        self.assertContains(response, mock_get_forecast.return_value['condition'])
+        self.assertContains(response, mock_get_forecast.return_value['daily_chance_of_rain'])
+        self.assertContains(response, mock_get_forecast.return_value['date'])
         self.assertContains(response, self.default_city)
 
-    @patch.object(WeatherApi, 'get_today_forecast')
-    def test_get_city_forecast_view_success(self, mock_get_today_forecast):
+    @patch.object(WeatherApi, 'get_forecast')
+    def test_get_city_forecast_view_success(self, mock_get_forecast):
         city = 'Berlin'
-        mock_get_today_forecast.return_value = {
+        mock_get_forecast.return_value = {
             'mintemp': '10°C',
             'maxtemp': '25°C',
             'condition': 'Sunny',
             'daily_chance_of_rain': '10%',
             'date': '2024-09-01',
         }
-        response = self.client.get(reverse('get_city_forecast', args=[city]))
+        response = self.client.get(reverse('get_city_forecast', args=[city, date.today().strftime('%Y-%m-%d')]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index.html')
-        self.assertContains(response, mock_get_today_forecast.return_value['mintemp'])
-        self.assertContains(response, mock_get_today_forecast.return_value['maxtemp'])
-        self.assertContains(response, mock_get_today_forecast.return_value['condition'])
-        self.assertContains(response, mock_get_today_forecast.return_value['daily_chance_of_rain'])
-        self.assertContains(response, mock_get_today_forecast.return_value['date'])
+        self.assertContains(response, mock_get_forecast.return_value['mintemp'])
+        self.assertContains(response, mock_get_forecast.return_value['maxtemp'])
+        self.assertContains(response, mock_get_forecast.return_value['condition'])
+        self.assertContains(response, mock_get_forecast.return_value['daily_chance_of_rain'])
+        self.assertContains(response, mock_get_forecast.return_value['date'])
         self.assertContains(response, city)
 
     def test_get_city_forecast_view_error(self):
-        request = self.client.get(reverse('get_city_forecast', kwargs={'city': 'InvalidCity'}))
-        response = get_city_forecast(request, 'InvalidCity')
+        request = self.client.get(reverse('get_city_forecast',
+                                          kwargs={'city': 'InvalidCity',
+                                                  'forecast_date': date.today().strftime('%Y-%m-%d')}))
+        response = get_city_forecast(request, 'InvalidCity', date.today().strftime('%Y-%m-%d'))
         self.assertEqual(response.status_code, 200)
 
 
@@ -68,10 +71,11 @@ class TestWeatherApi(TestCase):
         self.weather_api = WeatherApi(self.api_key)
 
     @patch('weather.controllers.weather_api.requests.get')
-    def test_get_today_forecast_success(self, mock_get):
+    def test_get_forecast_history_success(self, mock_get):
         city = 'Prague'
+        forecast_date = (date.today() - timedelta(days=3)).strftime('%Y-%m-%d')
         expected_result = {
-            'date': '2024-01-16',
+            'date': forecast_date,
             'condition': 'Sunny',
             'icon_src': 'images/icon-sun.png',
             'maxtemp': 10,
@@ -86,7 +90,46 @@ class TestWeatherApi(TestCase):
         mock_response.json.return_value = {
             'forecast': {
                 'forecastday': [{
-                    'date': '2024-01-16',
+                    'date': forecast_date,
+                    'day': {
+                        'condition': {'text': 'Sunny', 'code': 1000},
+                        'maxtemp_c': 10,
+                        'mintemp_c': 5,
+                        'daily_chance_of_rain': '0%',
+                    },
+                    'hour': [{'time': '2023-01-16 00:00', 'temp_c': 10},
+                             {'time': '2023-01-16 01:00', 'temp_c': 9},
+                             {'time': '2023-01-16 02:00', 'temp_c': 9}]
+                }]
+            }
+        }
+        mock_get.return_value = mock_response
+
+        # Call the method and check the result
+        result = self.weather_api.get_forecast(city, forecast_date)
+        self.assertEqual(result, expected_result)
+
+    @patch('weather.controllers.weather_api.requests.get')
+    def test_get_forecast_future_success(self, mock_get):
+        city = 'Prague'
+        forecast_date = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+        expected_result = {
+            'date': forecast_date,
+            'condition': 'Sunny',
+            'icon_src': 'images/icon-sun.png',
+            'maxtemp': 10,
+            'mintemp': 5,
+            'daily_chance_of_rain': '0%',
+            'hourly': [{'00:00': 10}, {'01:00': 9}, {'02:00': 9}]  # Sample hourly forecast
+        }
+
+        # Create a mock response object with the expected JSON data and status code
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'forecast': {
+                'forecastday': [{
+                    'date': forecast_date,
                     'day': {
                         'condition': {'text': 'Sunny', 'code': 1000},
                         'maxtemp_c': 10,
@@ -102,12 +145,13 @@ class TestWeatherApi(TestCase):
         mock_get.return_value = mock_response
 
         # Call the method and check the result
-        result = self.weather_api.get_today_forecast(city)
+        result = self.weather_api.get_forecast(city, forecast_date)
         self.assertEqual(result, expected_result)
 
     @patch('weather.controllers.weather_api.requests.get')
-    def test_get_today_forecast_error(self, mock_get):
+    def test_get_forecast_error(self, mock_get):
         city = 'NonexistentCity'
+        forecast_date = '2024-01-16'
         # Create a mock response object with a 404 status code
         mock_response = MagicMock()
         mock_response.status_code = 404
@@ -115,7 +159,43 @@ class TestWeatherApi(TestCase):
 
         # Check that a ValueError is raised when the city is not found
         with self.assertRaises(ValueError):
-            self.weather_api.get_today_forecast(city)
+            self.weather_api.get_forecast(city, forecast_date)
+
+    @patch('weather.controllers.weather_api.requests.get')
+    def test_get_history(self, mock_get):
+        city = 'Prague'
+        forecast_date = (date.today() - timedelta(days=2)).strftime('%Y-%m-%d')
+
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        # Call the method
+        response = self.weather_api._WeatherApi__get_history(city, forecast_date)
+
+        # Check that the requests.get method was called with the correct URL
+        mock_get.assert_called_once_with(f'https://api.weatherapi.com/v1/history.json?'
+                                         f'key=test_key&q=Prague&dt={forecast_date}')
+        self.assertEqual(response, mock_response)
+
+    @patch('weather.controllers.weather_api.requests.get')
+    def test_get_future(self, mock_get):
+        city = 'Prague'
+        forecast_date = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+
+        # Create a mock response object
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        # Call the method
+        response = self.weather_api._WeatherApi__get_future(city, forecast_date)
+
+        # Check that the requests.get method was called with the correct URL
+        mock_get.assert_called_once_with(f'https://api.weatherapi.com/v1/forecast.json?'
+                                         f'key=test_key&q=Prague&dt={forecast_date}')
+        self.assertEqual(response, mock_response)
 
 
 class TestUserController(TestCase):
