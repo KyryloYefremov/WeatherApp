@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Search panel -->
+<div id="search-div">
+    <form class="d-flex" method="GET" action="{% url 'search_city' %}">
+      <input class="form-control me-2" type="search" placeholder="Search Among European Cities"
+             aria-label="Search" name="city">
+      <button class="btn btn-outline-success search" type="submit">Search</button>
+    </form>
+</div>
+
+<!-- bootstrap tabs -->
+<div id="nav-tabs-div">
+    <ul class="nav nav-tabs">
+        {% for nav_city in nav_cities %}
+      <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'get_city_forecast' nav_city forecast.date %}">{{ nav_city }}</a>
+      </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="container">
+  <div class="row weather-container">
+    <div class="col-md-4">
+      <!-- Content for the first column -->
+        <img src="{% static forecast.icon_src %}" alt="" id="weather-img">
+    </div>
+    <div class="col-md-8">
+      <!-- Content for the second column -->
+        <h2>{{ forecast.city }}: {{ forecast.date }}
+            {% if is_authenticated %}
+                {% if forecast.city not in nav_cities %}
+                <a class="btn btn-pin" href="{% url 'save_city' forecast.city forecast.date %}">Pin</a>
+                {% else %}
+                <a class="btn btn-pin" href="{% url 'remove_city' forecast.city forecast.date %}">Unpin</a>
+                {% endif %}
+            {% endif %}
+        </h2>
+        <p>
+            <span class="temp">{{ forecast.mintemp }} - {{ forecast.maxtemp }}</span>
+            <span class="temp-symbol">°C</span>
+        </p>
+        <p>{{ forecast.condition }}.</p>
+        <p>Rain probability: {{ forecast.daily_chance_of_rain }}%</p>
+
+        <div class="time-list">
+            {% for hour in forecast.hourly %}
+            <div class="time-item">
+                {% for time, degrees in hour.items %}
+                  <div class="degrees">{{ degrees }}°C</div>
+                  <div class="time">{{ time }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<hr>
+
+{% if is_authenticated %}
+<div class="container">
+    <div id="forecast">
+        <div class="col-md" id="next-days-forecast">
+            <h2>Next Days</h2>
+            <div class="forecast-list">
+                {% for date in next_dates %}
+                <div class="forecast-item" onclick="location.href='{% url "get_city_forecast" forecast.city date.date%}'">
+                    <div class="forecast-day">{{ date.date }}</div>
+                    <div class="forecast-degrees">{{ date.day }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md" id="prev-days-forecast">
+            <div>
+                <h2>Previous Days</h2>
+            </div>
+
+            <div class="forecast-list">
+                {% for date in prev_dates %}
+                <div class="forecast-item" onclick="location.href='{% url "get_city_forecast" forecast.city date.date%}'">
+                    <div class="forecast-day">{{ date.date }}</div>
+                    <div class="forecast-degrees">{{ date.day }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
