@@ -14,9 +14,11 @@
 <!-- bootstrap tabs -->
 <div id="nav-tabs-div">
     <ul class="nav nav-tabs">
+        {% for nav_city in nav_cities %}
       <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">{{ forecast.city }}</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'get_city_forecast' nav_city forecast.date %}">{{ nav_city }}</a>
       </li>
+        {% endfor %}
     </ul>
 </div>
 
@@ -28,7 +30,15 @@
     </div>
     <div class="col-md-8">
       <!-- Content for the second column -->
-        <h2>Actual Weather {{ forecast.city }}: {{ forecast.date }} </h2>
+        <h2>{{ forecast.city }}: {{ forecast.date }}
+            {% if is_authenticated %}
+                {% if forecast.city not in nav_cities %}
+                <a class="btn btn-pin" href="{% url 'save_city' forecast.city forecast.date %}">Pin</a>
+                {% else %}
+                <a class="btn btn-pin" href="{% url 'remove_city' forecast.city forecast.date %}">Unpin</a>
+                {% endif %}
+            {% endif %}
+        </h2>
         <p>
             <span class="temp">{{ forecast.mintemp }} - {{ forecast.maxtemp }}</span>
             <span class="temp-symbol">°C</span>
@@ -53,7 +63,7 @@
 
 <hr>
 
-{% if user.is_authenticated %}
+{% if is_authenticated %}
 <div class="container">
     <div id="forecast">
         <div class="col-md" id="next-days-forecast">

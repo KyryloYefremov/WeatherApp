@@ -13,7 +13,7 @@ weather_api = WeatherApi(os.getenv('API_KEY'))
 user_controller = UserController('data/users-data.txt')
 user = {
     'is_authenticated': False,
-    'saved_cities': [],
+    'saved_cities': ['Berlin', 'Liberec']
 }
 
 
@@ -24,6 +24,7 @@ def index(request):
 
 def get_city_forecast(request, city, forecast_date):
     try:
+        print(user['saved_cities'])
         forecast = weather_api.get_forecast(city, forecast_date)
         forecast['city'] = city
 
@@ -43,8 +44,12 @@ def get_city_forecast(request, city, forecast_date):
                 'day': date_obj.strftime('%A')
             })
 
-        return render(request, 'index.html',
-                      context={'forecast': forecast, 'user': user, 'prev_dates': prev_dates, 'next_dates': next_dates})
+        return render(
+            request, 'index.html',
+            context={'forecast': forecast, 'is_authenticated': user['is_authenticated'],
+                     'prev_dates': prev_dates, 'next_dates': next_dates,
+                     'nav_cities': user['saved_cities']
+                     if user['is_authenticated'] and user['saved_cities'] else [city]})
     except ValueError as e:
         return render(request, 'index-search-error.html', context={'error': e})
 
@@ -96,3 +101,13 @@ def sign_out(request):
     user['is_authenticated'] = False
     user['saved_cities'] = []
     return redirect('index')
+
+
+def save_city(request, city, forecast_date):
+    user['saved_cities'].append(city)
+    return redirect('get_city_forecast', city=city, forecast_date=forecast_date)
+
+
+def remove_city(request, city, forecast_date):
+    user['saved_cities'].remove(city)
+    return redirect('get_city_forecast', city=city, forecast_date=forecast_date)
