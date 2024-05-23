@@ -6,6 +6,7 @@ from weather.controllers.weather_api import WeatherApi
 from weather.controllers.user_controller import UserController
 
 import os
+from datetime import date, timedelta, datetime
 
 DEFAULT_CITY = 'Prague'
 weather_api = WeatherApi(os.getenv('API_KEY'))
@@ -17,14 +18,33 @@ user = {
 
 
 def index(request):
-    return get_city_forecast(request, DEFAULT_CITY)
+    today = date.today().strftime('%Y-%m-%d')
+    return get_city_forecast(request, DEFAULT_CITY, today)
 
 
-def get_city_forecast(request, city):
+def get_city_forecast(request, city, forecast_date):
     try:
-        today_forecast = weather_api.get_today_forecast(city)
-        today_forecast['city'] = city
-        return render(request, 'index.html', context={'today_forecast': today_forecast, 'user': user})
+        forecast = weather_api.get_forecast(city, forecast_date)
+        forecast['city'] = city
+
+        forecast_obj = datetime.strptime(forecast_date, '%Y-%m-%d').date()
+
+        prev_dates, next_dates = [], []
+        for i in range(7, 0, -1):
+            date_obj = forecast_obj - timedelta(days=i)
+            prev_dates.append({
+                'date': date_obj.strftime('%Y-%m-%d'),
+                'day': date_obj.strftime('%A')
+            })
+        for i in range(1, 4):
+            date_obj = forecast_obj + timedelta(days=i)
+            next_dates.append({
+                'date': date_obj.strftime('%Y-%m-%d'),
+                'day': date_obj.strftime('%A')
+            })
+
+        return render(request, 'index.html',
+                      context={'forecast': forecast, 'user': user, 'prev_dates': prev_dates, 'next_dates': next_dates})
     except ValueError as e:
         return render(request, 'index-search-error.html', context={'error': e})
 
@@ -33,7 +53,8 @@ def search_city(request):
     city = request.GET.get('city', None)
     if city:
         city = city.title()
-        return redirect('get_city_forecast', city=city)
+        today = date.today().strftime('%Y-%m-%d')
+        return redirect('get_city_forecast', city=city, forecast_date=today)
 
 
 def sign_in(request):
