@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from .forms import SignUpForm, SignInForm
@@ -24,7 +25,6 @@ def index(request):
 
 def get_city_forecast(request, city, forecast_date):
     try:
-        print(user['saved_cities'])
         forecast = weather_api.get_forecast(city, forecast_date)
         forecast['city'] = city
 
@@ -111,3 +111,9 @@ def save_city(request, city, forecast_date):
 def remove_city(request, city, forecast_date):
     user['saved_cities'].remove(city)
     return redirect('get_city_forecast', city=city, forecast_date=forecast_date)
+
+
+def get_json_forecast(request, city, forecast_date):
+    forecast = weather_api.get_forecast(city, forecast_date)
+    forecast['city'] = city
+    return JsonResponse(forecast)

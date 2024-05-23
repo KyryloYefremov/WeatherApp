@@ -28,4 +28,5 @@ urlpatterns = [
     path('sign-out/', views.sign_out, name='sign_out'),
     path('save-city/<str:city>/<str:forecast_date>/', views.save_city, name='save_city'),
     path('remove-city/<str:city>/<str:forecast_date>/', views.remove_city, name='remove_city'),
+    path('api-forecast/<str:city>/<str:forecast_date>/', views.get_json_forecast, name='get_json_forecast'),
 ]
