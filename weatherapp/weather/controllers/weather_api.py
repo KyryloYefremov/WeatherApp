@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 import requests
 
 
@@ -36,15 +38,40 @@ class WeatherApi:
             "Moderate or heavy snow with thunder": 1282,  "Patchy light snow with thunder": 1279
         }
 
-    def get_today_forecast(self, city: str) -> dict:
+    def __get_history(self, city: str, forecast_date: str) -> requests.Response:
+        """
+        Get historical weather data for the specified city and date.
+        :param city: City name.
+        :param forecast_date: Date in the format 'YYYY-MM-DD'.
+        :return: response object.
+        """
+        url = f'{self.__url}v1/history.json?key={self.__api_key}&q={city}&dt={forecast_date}'
+        response = requests.get(url)
+        return response
+
+    def __get_future(self, city: str, forecast_date: str) -> requests.Response:
+        """
+        Get future weather data for the specified city and date.
+        :param city: City name.
+        :param forecast_date: Date in the format 'YYYY-MM-DD'.
+        :return: response object.
+        """
+        url = f'{self.__url}v1/forecast.json?key={self.__api_key}&q={city}&dt={forecast_date}'
+        response = requests.get(url)
+        return response
+
+    def get_forecast(self, city: str, forecast_date: str) -> dict:
         """
         Get today's forecast for the specified city.
         :param city: City name.
+        :param forecast_date: Date in the format 'YYYY-MM-DD'.
         :return: Dictionary with forecast data.
         """
+        if datetime.strptime(forecast_date, '%Y-%m-%d').date() > date.today():
+            response = self.__get_future(city, forecast_date)
+        else:
+            response = self.__get_history(city, forecast_date)
 
-        url = f'{self.__url}v1/forecast.json?key={self.__api_key}&q={city}&days=1&aqi=no&alerts=no'
-        response = requests.get(url)
         # Check if city exists.
         if response.status_code != 200:
             raise ValueError(f"Error 404. Don't find city with name: {city}.")
