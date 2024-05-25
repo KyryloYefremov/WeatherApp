@@ -6,7 +6,7 @@ After=network.target
 User=ubuntu
 Group=www-data
 WorkingDirectory=/home/ubuntu/WeatherApp/weatherapp
-ExecStart=/home/ubuntu/myenv/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock weatherapp.wsgi:application
+ExecStart=/home/ubuntu/env/bin/gunicorn --access-logfile - --workers 3 --bind unix:/run/gunicorn.sock weatherapp.wsgi:application
 
        
 [Install]
