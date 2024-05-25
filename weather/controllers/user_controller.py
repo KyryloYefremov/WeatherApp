@@ -13,7 +13,8 @@ class UserController:
                     email, pwd = credentials[0], credentials[1]
                     if email == form_email and pwd == password:
                         return True
-        except Exception:
+        except Exception as e:
+            print(e)
             return False
         return False
 
@@ -39,6 +40,5 @@ class UserController:
             with open(self.__user_file_path, 'a') as file:
                 file.write(f"{email},{password},{card_number},{cvv},{expiration_date}\n")
             return True
-        except Exception as e:
-            print(e)
+        except Exception:
             return False
