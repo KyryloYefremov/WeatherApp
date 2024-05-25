@@ -11,7 +11,7 @@ from datetime import date, timedelta, datetime
 
 DEFAULT_CITY = 'Prague'
 weather_api = WeatherApi(os.getenv('API_KEY'))
-user_controller = UserController('data/users-data.txt')
+user_controller = UserController('weather/data/users-data.txt')
 user = {
     'is_authenticated': False,
     'saved_cities': ['Berlin', 'Liberec']
