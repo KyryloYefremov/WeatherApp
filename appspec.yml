@@ -2,35 +2,35 @@ version: 0.0
 os: linux
 files: 
   - source: /
-    destination: /home/ubuntu/WeatherApp/weatherapp
+    destination: /home/ubuntu/WeatherApp
 permissions:
-  - object: /home/ubuntu/WeatherApp/weatherapp
+  - object: /home/ubuntu/WeatherApp
     owner: ubuntu
     group: ubuntu
 hooks:
   BeforeInstall:
-      - location: scripts/clean_instance.sh
+      - location: weatherapp/scripts/clean_instance.sh
         timeout: 300
         runas: ubuntu
   AfterInstall:
-      - location: scripts/instance_os_dependencies.sh
+      - location: weatherapp/scripts/instance_os_dependencies.sh
         timeout: 300
         runas: ubuntu
-      - location: scripts/python_dependencies.sh
+      - location: weatherapp/scripts/python_dependencies.sh
         timeout: 300
         runas: ubuntu
-      - location: scripts/gunicorn.sh
+      - location: weatherapp/scripts/gunicorn.sh
         timeout: 300
         runas: ubuntu
-      - location: scripts/nginx.sh
+      - location: weatherapp/scripts/nginx.sh
         timeout: 300
         runas: ubuntu
   ApplicationStop:
-      - location: scripts/stop_app.sh
+      - location: weatherapp/scripts/stop_app.sh
         timeout: 300
         runas: ubuntu
   ApplicationStart:
-      - location: scripts/start_app.sh
+      - location: weatherapp/scripts/start_app.sh
         timeout: 300
         runas: ubuntu
   
