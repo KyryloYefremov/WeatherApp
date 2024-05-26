@@ -10,9 +10,6 @@ from datetime import date, timedelta, datetime
 from config import API_KEY
 
 
-
-
-
 DEFAULT_CITY = 'Prague'
 weather_api = WeatherApi(API_KEY)
 user_controller = UserController('weather/data/users-data.txt')
@@ -113,7 +110,10 @@ def save_city(request, city, forecast_date):
 
 
 def remove_city(request, city, forecast_date):
-    user['saved_cities'].remove(city)
+    try:
+        user['saved_cities'].remove(city)
+    except ValueError:
+        pass
     return redirect('get_city_forecast', city=city, forecast_date=forecast_date)
 
 
