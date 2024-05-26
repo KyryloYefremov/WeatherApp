@@ -10,6 +10,9 @@ from datetime import date, timedelta, datetime
 from config import API_KEY
 
 
+
+
+
 DEFAULT_CITY = 'Prague'
 weather_api = WeatherApi(API_KEY)
 user_controller = UserController('weather/data/users-data.txt')
