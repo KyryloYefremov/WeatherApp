@@ -2,21 +2,9 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from .forms import SignUpForm, SignInForm
-
-from weather.controllers.weather_api import WeatherApi
-from weather.controllers.user_controller import UserController
+from .define import DEFAULT_CITY, user, weather_api, user_controller
 
 from datetime import date, timedelta, datetime
-from config import API_KEY
-
-
-DEFAULT_CITY = 'Prague'
-weather_api = WeatherApi(API_KEY)
-user_controller = UserController('weather/data/users-data.txt')
-user = {
-    'is_authenticated': False,
-    'saved_cities': ['Berlin', 'Liberec']
-}
 
 
 def index(request):
